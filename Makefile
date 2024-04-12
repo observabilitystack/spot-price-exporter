@@ -27,14 +27,10 @@ license-check: bin/licensei ## Run license check
 license-cache: bin/licensei ## Generate license cache
 	@bin/licensei cache
 
-DEP_VERSION = 0.5.0
-bin/dep:
-	@mkdir -p ./bin/
-	@curl https://raw.githubusercontent.com/golang/dep/master/install.sh | INSTALL_DIRECTORY=./bin DEP_RELEASE_TAG=v${DEP_VERSION} sh
-
 .PHONY: vendor
-vendor: bin/dep ## Install dependencies
-	bin/dep ensure -vendor-only
+vendor: ## Install dependencies
+	go mod tidy
+	go install .
 
 all: clean vendor deps fmt vet docker push
 
@@ -99,4 +95,3 @@ ineffassign: install-ineffassign
 
 gocyclo: install-gocyclo
 	gocyclo -over 19 ${GOFILES_NOVENDOR}
-
